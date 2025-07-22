@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Importa Shared Preferences
-import 'dart:convert'; // Importa para JSON encoding/decoding
+import 'package:shared_preferences/shared_preferences.dart'; 
+import 'dart:convert'; 
 import '../models/sale_model.dart';
 import 'product_controller.dart';
 import 'package:uuid/uuid.dart';
@@ -23,7 +23,7 @@ class SaleController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadSalesHistory(); // Cargar historial de ventas al inicializar
+    _loadSalesHistory(); // Carga historial de ventas al inicializar
     ever(currentSaleItems, (_) => _calculateTotal());
   }
 
@@ -131,6 +131,6 @@ class SaleController extends GetxController {
 
   void deleteSaleItemCompletely(String barcode) {
     currentSaleItems.removeWhere((item) => item.productBarcode == barcode);
-    Get.snackbar('Eliminado', 'Producto ${barcode} eliminado de la venta.', backgroundColor: Colors.red, colorText: Colors.white);
+    Get.snackbar('Eliminado', 'Producto $barcode eliminado de la venta.', backgroundColor: Colors.red, colorText: Colors.white);
   }
 }
