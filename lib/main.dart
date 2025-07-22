@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:proyecto_control_stock/screens/home_screen.dart'; // Importa la nueva HomeScreen
-import 'package:proyecto_control_stock/controllers/product_controller.dart'; // Asegúrate de inyectarlos
+import 'package:proyecto_control_stock/screens/home_screen.dart'; 
+import 'package:proyecto_control_stock/controllers/product_controller.dart'; 
 import 'package:proyecto_control_stock/controllers/sale_controller.dart';
 
 void main() {
