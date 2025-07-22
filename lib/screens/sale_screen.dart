@@ -21,7 +21,7 @@ class SaleScreen extends StatelessWidget {
         // y si el texto actual no es ya "0.00"
         receivedAmountController.text = value.toStringAsFixed(2);
       } else if (value != 0.0 && receivedAmountController.text == "0.00") {
-        // Si el usuario empieza a escribir, no fuerces a 0.00
+        // Si el usuario empieza a escribir, no fuerza a 0.00
       }
     });
     return Scaffold(
@@ -67,7 +67,7 @@ class SaleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // Lista de Ítems en la Venta (similar a la imagen, pero con datos reales)
+           
             Expanded(
               child: Obx(
                 () {
@@ -115,7 +115,7 @@ class SaleScreen extends StatelessWidget {
             // Sección de Cálculos: TOTAL, RECIBIDO, VUELTO
             Container(
               padding: const EdgeInsets.all(12.0),
-              color: Colors.grey[200], // Fondo gris como en la imagen
+              color: Colors.grey[200], 
               child: Column(
                 children: [
                   _buildCalculationRow(
@@ -194,7 +194,7 @@ class SaleScreen extends StatelessWidget {
     );
   }
 
-  // Helper para las filas de cálculo
+ 
   Widget _buildCalculationRow(
       String label, RxDouble observableValue, Color color) {
     return Obx(
