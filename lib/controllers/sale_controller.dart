@@ -1,47 +1,43 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart'; 
-import 'dart:convert'; 
 import '../models/sale_model.dart';
 import 'product_controller.dart';
 import 'package:uuid/uuid.dart';
+import '../services/data_storage_service.dart'; // Importa la interfaz
+
 
 class SaleController extends GetxController {
   final ProductController productController = Get.find<ProductController>();
   final _uuid = const Uuid();
-  static const String _salesHistoryKey = 'sales_history_data'; // Clave para guardar ventas
 
-  // Estado de la venta actual
+  late final IDataStorageService _storageService;
+
+  SaleController({required IDataStorageService storageService})
+      : _storageService = storageService;
+
   var currentSaleItems = <SaleItem>[].obs;
   var totalAmount = 0.0.obs;
   var receivedAmount = 0.0.obs;
   var changeAmount = 0.0.obs;
 
-  // Historial de ventas
   var salesHistory = <Sale>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    _loadSalesHistory(); // Carga historial de ventas al inicializar
+    _loadSalesHistory();
     ever(currentSaleItems, (_) => _calculateTotal());
+    // No necesitamos un ever para salesHistory porque solo se guarda en processSale
   }
 
+  // Los métodos de carga y guardado ahora usan la interfaz
   Future<void> _loadSalesHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? salesJsonString = prefs.getString(_salesHistoryKey);
-
-    if (salesJsonString != null) {
-      final List<dynamic> salesJsonList = jsonDecode(salesJsonString) as List<dynamic>;
-      salesHistory.assignAll(salesJsonList.map((json) => Sale.fromJson(json as Map<String, dynamic>)).toList());
-    }
+    final loadedSales = await _storageService.loadSales();
+    salesHistory.assignAll(loadedSales);
   }
 
   Future<void> _saveSalesHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<Map<String, dynamic>> salesJsonList = salesHistory.map((sale) => sale.toJson()).toList();
-    await prefs.setString(_salesHistoryKey, jsonEncode(salesJsonList));
-    print('Historial de ventas guardado en SharedPreferences'); // Para depuración
+    await _storageService.saveSales(salesHistory.toList());
   }
 
   void addProductToSale(String barcode) {
@@ -102,8 +98,8 @@ class SaleController extends GetxController {
     );
 
     salesHistory.add(newSale);
-    _saveSalesHistory(); // Guardar el historial después de añadir una venta
-    resetSale(); // Limpiar la venta actual
+    _saveSalesHistory(); // Guarda la nueva venta
+    resetSale();
     Get.snackbar('Venta Exitosa', 'Venta registrada con éxito.', backgroundColor: Colors.green, colorText: Colors.white);
   }
 
@@ -131,6 +127,6 @@ class SaleController extends GetxController {
 
   void deleteSaleItemCompletely(String barcode) {
     currentSaleItems.removeWhere((item) => item.productBarcode == barcode);
-    Get.snackbar('Eliminado', 'Producto $barcode eliminado de la venta.', backgroundColor: Colors.red, colorText: Colors.white);
+    Get.snackbar('Eliminado', 'Producto ${barcode} eliminado de la venta.', backgroundColor: Colors.red, colorText: Colors.white);
   }
 }

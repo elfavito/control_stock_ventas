@@ -6,7 +6,7 @@ import '../models/product_model.dart';
 class ProductListScreen extends StatelessWidget {
   ProductListScreen({super.key});
 
-  final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
