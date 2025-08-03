@@ -1,34 +1,42 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// ignore: unused_import
+import 'package:proyecto_control_stock/services/shared_preferences.dart';
 import 'services/sqlite_service.dart';
 import 'screens/home_screen.dart';
-import '../models/sale_model.dart';
 import 'controllers/product_controller.dart';
 import 'controllers/sale_controller.dart';
-import '../services/data_storage_service.dart'; // Importa el nuevo servicio SQLite
+import '../services/data_storage_service.dart';
+
+import 'package:path/path.dart';
+import 'dart:io'; // Necesario para Directory.current
 
 void main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Asegura la inicialización de plugins
+  WidgetsFlutterBinding.ensureInitialized();
+  await Get.putAsync<IDataStorageService>(() async {
+    IDataStorageService service;
 
-  // --- PUNTO DE DECISIÓN CLAVE ---
-  // Descomenta la línea que deseas usar para la persistencia de datos
-  // y comenta la otra.
+    // --- ELIGE TU SERVICIO DE ALMACENAMIENTO AQUÍ ---
 
-  // Opcion 1: Usar SharedPreferences
-  // IDataStorageService storageService = SharedPreferencesService();
+    // Opción 1: Usar SQLiteService
+    final String currentDir = Directory.current.path;
+    final String databasePath = join(currentDir, 'database');
+    final Directory databaseDir = Directory(databasePath);
 
-  // Opcion 2: Usar SQLite
-  IDataStorageService storageService = SQLiteService();
-  // ------------------------------
-
-  await storageService
-      .init(); // Inicializa el servicio de almacenamiento elegido
-
-  // Inyecta los controladores, pasándoles la instancia del servicio de almacenamiento
-  Get.put(ProductController(storageService: storageService));
-  Get.put(SaleController(storageService: storageService));
+    if (!await databaseDir.exists()) {
+      await databaseDir.create(recursive: true);
+    }
+    final String finalDbPath = join(databasePath, 'proyecto_control_stock.db');
+    service = SQLiteService(customDatabasePath: finalDbPath);
+    // ------------------------------------------------------------------
+    // Opción 2:
+    //  service = SharedPreferencesService();
+    await service.init(); // Inicializa el servicio seleccionado
+    return service; // Devuelve la instancia inicializada a GetX
+  }, permanent: true);
+  Get.put(ProductController(storageService: Get.find<IDataStorageService>()));
+  Get.put(SaleController(storageService: Get.find<IDataStorageService>()));
 
   runApp(const MyApp());
 }
@@ -39,15 +47,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Control de Stock',
-      debugShowCheckedModeBanner: false,
+      title: 'Stock Manager',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.indigo,
-          foregroundColor: Colors.white,
-        ),
       ),
       home: const HomeScreen(),
     );

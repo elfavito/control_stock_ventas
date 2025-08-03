@@ -17,7 +17,6 @@ class Product {
       id: json['id'] as String,
       barcode: json['barcode'] as String,
       name: json['name'] as String,
-      // Asegúrate de que el precio se maneje como double
       price: (json['price'] as num).toDouble(),
     );
   }

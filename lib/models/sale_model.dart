@@ -68,7 +68,7 @@ class Sale {
     required this.receivedAmount,
     required this.changeAmount,
   });
-
+  
   // Constructor fromJson
   factory Sale.fromJson(Map<String, dynamic> json) {
     return Sale(

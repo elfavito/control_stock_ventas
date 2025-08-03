@@ -109,27 +109,42 @@ class ProductListScreen extends StatelessWidget {
             onPressed: () => Get.back(),
             child: const Text('Cancelar'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              final barcode = barcodeController.text.trim();
-              final name = nameController.text.trim();
-              final price = double.tryParse(priceController.text.trim());
+          // Envuelve el botón en un Obx para que reaccione a los cambios de estado
+          Obx(() => ElevatedButton(
+                onPressed: productController.isAddingProduct.value
+                    ? null // Deshabilita el botón si está procesando
+                    : () {
+                        final barcode = barcodeController.text.trim();
+                        final name = nameController.text.trim();
+                        final price = double.tryParse(priceController.text.trim());
 
-              if (price == null) {
-                Get.snackbar('Error', 'El precio debe ser un número válido.');
-                return;
-              }
+                        if (price == null) {
+                          Get.snackbar(
+                              'Error', 'El precio debe ser un número válido.');
+                          return;
+                        }
 
-              if (isEditing) {
-                productController.updateProduct(
-                    product.id, barcode, name, price);
-              } else {
-                productController.addProduct(barcode, name, price);
-              }
-              Get.back();
-            },
-            child: Text(isEditing ? 'Guardar Cambios' : 'Añadir'),
-          ),
+                        if (isEditing) {
+                          productController.updateProduct(
+                              product.id, barcode, name, price);
+                          // Cierra el diálogo después de editar
+                          Get.back(); 
+                        } else {
+                          // Llama al método asíncrono
+                          productController.addProduct(barcode, name, price);
+                        }
+                      },
+                child: productController.isAddingProduct.value
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(isEditing ? 'Guardar Cambios' : 'Añadir'),
+              )),
         ],
       ),
     );

@@ -127,6 +127,6 @@ class SaleController extends GetxController {
 
   void deleteSaleItemCompletely(String barcode) {
     currentSaleItems.removeWhere((item) => item.productBarcode == barcode);
-    Get.snackbar('Eliminado', 'Producto ${barcode} eliminado de la venta.', backgroundColor: Colors.red, colorText: Colors.white);
+    Get.snackbar('Eliminado', 'Producto $barcode eliminado de la venta.', backgroundColor: Colors.red, colorText: Colors.white);
   }
 }

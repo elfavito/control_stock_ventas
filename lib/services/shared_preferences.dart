@@ -19,6 +19,7 @@ class SharedPreferencesService implements IDataStorageService {
   Future<void> saveProducts(List<Product> products) async {
     final List<Map<String, dynamic>> productsJsonList = products.map((product) => product.toJson()).toList();
     await _prefs.setString(_productsKey, jsonEncode(productsJsonList));
+    // ignore: avoid_print
     print('Productos guardados en SharedPreferences');
   }
 
