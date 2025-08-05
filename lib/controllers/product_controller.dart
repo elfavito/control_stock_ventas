@@ -115,7 +115,7 @@ class ProductController extends GetxController {
     }
   }
 
-  void updateProduct(
+  void updateProduct( //Al reemplazar el objeto completo en la lista, te aseguras de que el sistema reactivo de Getx (.obs) detecte el cambio. 
       String id, String newBarcode, String newName, double newPrice) {
     final index = products.indexWhere((p) => p.id == id);
     if (index != -1) {

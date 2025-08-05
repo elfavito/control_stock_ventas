@@ -10,11 +10,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       appBar: AppBar(
         title: const Text('Control de Stock - Menú Principal'),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
+      
+      
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -47,6 +47,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      color: Colors.amber,
+      debugShowCheckedModeBanner: false,
       title: 'Stock Manager',
       theme: ThemeData(
         primarySwatch: Colors.blue,
