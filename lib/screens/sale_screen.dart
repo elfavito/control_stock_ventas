@@ -7,23 +7,24 @@ import '../controllers/sale_controller.dart';
 class SaleScreen extends StatelessWidget {
   SaleScreen({super.key});
 
-
   final SaleController saleController = Get.find<SaleController>();
   final TextEditingController barcodeInputController = TextEditingController();
   final TextEditingController receivedAmountController =
-      TextEditingController();
+      TextEditingController(text: '0.00');
 
   @override
   Widget build(BuildContext context) {
-   ever(saleController.receivedAmount, (double value) {
-      if (receivedAmountController.text != value.toStringAsFixed(2) && value == 0.0) {
-        // Solo actualiza si el valor es 0 para evitar loops o sobreescritura constante
-        // y si el texto actual no es ya "0.00"
-        receivedAmountController.text = value.toStringAsFixed(2);
-      } else if (value != 0.0 && receivedAmountController.text == "0.00") {
-        // Si el usuario empieza a escribir, no fuerza a 0.00
-      }
-    });
+    // ever(saleController.receivedAmount, (double value) {
+    //   if (receivedAmountController.text != value.toStringAsFixed(2) &&
+    //       value == 0.0) {
+    //     // Solo actualiza si el valor es 0 para evitar loops o sobreescritura constante
+    //     // y si el texto actual no es ya "0.00"
+    //     receivedAmountController.text =
+    //         value.toStringAsFixed(2); //Convierte el número a un String
+    //   } else if (value != 0.0 && receivedAmountController.text == "0.00") {
+    //     // Si el usuario empieza a escribir, no fuerza a 0.00
+    //   }
+    // });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Terminal de Venta'),
@@ -32,7 +33,10 @@ class SaleScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => saleController.resetSale(), 
+            onPressed: () {
+              saleController.resetSale();
+              receivedAmountController.text = '0.00';
+            },
             tooltip: 'Nueva Venta',
           ),
         ],
@@ -67,7 +71,7 @@ class SaleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-           
+            // Lista de productos de la venta
             Expanded(
               child: Obx(
                 () {
@@ -115,7 +119,7 @@ class SaleScreen extends StatelessWidget {
             // Sección de Cálculos: TOTAL, RECIBIDO, VUELTO
             Container(
               padding: const EdgeInsets.all(12.0),
-              color: Colors.grey[200], 
+              color: Colors.grey[200],
               child: Column(
                 children: [
                   _buildCalculationRow(
@@ -140,10 +144,9 @@ class SaleScreen extends StatelessWidget {
                               color: Colors.blue),
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            isDense: true, // Reduce el espacio vertical
+                            isDense: true,
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 8.0,
-                                horizontal: 8.0), // Ajusta el padding
+                                vertical: 8.0, horizontal: 8.0),
                           ),
                           onChanged: (value) =>
                               saleController.setReceivedAmount(value),
@@ -164,7 +167,10 @@ class SaleScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => saleController.processSale(),
+                    onPressed: () {
+                      saleController.processSale();
+                      receivedAmountController.text = '0.00'; //nuevo!
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
@@ -176,8 +182,10 @@ class SaleScreen extends StatelessWidget {
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => saleController
-                        .resetSale(), // Puedes re-usar resetSale para "Cancelar"
+                    onPressed: () {
+                      saleController.resetSale();
+                      receivedAmountController.text = '0.00';
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -194,11 +202,9 @@ class SaleScreen extends StatelessWidget {
     );
   }
 
- 
   Widget _buildCalculationRow(
       String label, RxDouble observableValue, Color color) {
     return Obx(
-      // Ahora este Obx tiene una variable observable para escuchar
       () => Row(
         children: [
           Expanded(
@@ -207,7 +213,6 @@ class SaleScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       color: color))),
-          // Lee el .value DIRECTAMENTE dentro del Obx
           Text('\$${observableValue.value.toStringAsFixed(2)}',
               style: TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 18, color: color)),

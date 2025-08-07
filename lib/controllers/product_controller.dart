@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import 'package:uuid/uuid.dart';
-import '../services/data_storage_service.dart'; 
+import '../services/data_storage_service.dart';
 
 class ProductController extends GetxController {
   var products = <Product>[].obs;
@@ -10,10 +10,11 @@ class ProductController extends GetxController {
 
   // Dependencia de la interfaz, NO de una implementación concreta
   //instancia de la clase abstracta
-  late final IDataStorageService _storageService; //declaracion de una variable 
+  late final IDataStorageService _storageService; //declaracion de una variable
 
   // Constructor que recibe la dependencia
-  ProductController({required IDataStorageService storageService}) { //obliga a que el controlador reciba su dependencia al ser creado
+  ProductController({required IDataStorageService storageService}) {
+    //obliga a que el controlador reciba su dependencia al ser creado
     _storageService = storageService;
   }
 
@@ -21,7 +22,8 @@ class ProductController extends GetxController {
   void onInit() {
     super.onInit();
     // Primero, carga los productos y ESPERA a que la operación termine.
-    _loadProducts().then((_) { //asegura que el código dentro del bloque solo se ejecute después de que los productos se hayan cargado
+    _loadProducts().then((_) {
+      //asegura que el código dentro del bloque solo se ejecute después de que los productos se hayan cargado
       // DESPUÉS de cargar, comprueba si la lista está vacía.
       if (products.isEmpty) {
         _populateInitialProducts();
@@ -86,10 +88,12 @@ class ProductController extends GetxController {
       }
       // La validación de código de barras duplicado ya existía y es correcta
       if (products.any((p) => p.barcode == barcode)) {
-        Get.snackbar('Error', 'Ya existe un producto con este código de barras.',
+        Get.snackbar(
+            'Error', 'Ya existe un producto con este código de barras.',
             backgroundColor: Colors.red, colorText: Colors.white);
         return;
       }
+      //si queremos usarlo en la UI obliga a crear un nuevo mecanismo para que el controlador pueda comunicarse con la pantalla.
 
       final newProduct = Product(
         id: _uuid.v4(),
@@ -108,15 +112,18 @@ class ProductController extends GetxController {
       // Muestra la confirmación en la pantalla a la que hemos vuelto
       Get.snackbar('Éxito', 'Producto "$name" añadido.',
           backgroundColor: Colors.green, colorText: Colors.white);
-
     } finally {
       // Asegura que el estado de carga se restablezca siempre
       isAddingProduct.value = false;
     }
   }
 
-  void updateProduct( //Al reemplazar el objeto completo en la lista, te aseguras de que el sistema reactivo de Getx (.obs) detecte el cambio. 
-      String id, String newBarcode, String newName, double newPrice) {
+  void updateProduct(
+      //Al reemplazar el objeto completo en la lista, te aseguras de que el sistema reactivo de Getx (.obs) detecte el cambio.
+      String id,
+      String newBarcode,
+      String newName,
+      double newPrice) {
     final index = products.indexWhere((p) => p.id == id);
     if (index != -1) {
       if (products.any((p) => p.barcode == newBarcode && p.id != id)) {

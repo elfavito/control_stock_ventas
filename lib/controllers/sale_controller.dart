@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+// ignore: unused_import
 import 'package:proyecto_control_stock/models/product_model.dart';
 import '../models/sale_model.dart';
 import 'product_controller.dart';

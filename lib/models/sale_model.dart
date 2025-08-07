@@ -68,15 +68,21 @@ class Sale {
     required this.receivedAmount,
     required this.changeAmount,
   });
-  
+
   // Constructor fromJson
   factory Sale.fromJson(Map<String, dynamic> json) {
     return Sale(
       id: json['id'] as String,
-      saleDate: DateTime.parse(json['saleDate'] as String), // Parsear String a DateTime
-      items: (json['items'] as List)
-          .map((itemJson) => SaleItem.fromJson(itemJson as Map<String, dynamic>))
-          .toList(),
+      saleDate: DateTime.parse(json['saleDate'] as String),
+      items: (json['items'] as List).map((itemJson) {
+        // VERIFICACIÓN CLAVE:
+        // Si el item ya es un SaleItem, lo usamos directamente.
+        if (itemJson is SaleItem) {
+          return itemJson;
+        }
+        // Si es un Map (como esperamos del JSON), lo convertimos.
+        return SaleItem.fromJson(itemJson as Map<String, dynamic>);
+      }).toList(),
       totalAmount: (json['totalAmount'] as num).toDouble(),
       receivedAmount: (json['receivedAmount'] as num).toDouble(),
       changeAmount: (json['changeAmount'] as num).toDouble(),
@@ -87,7 +93,8 @@ class Sale {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'saleDate': saleDate.toIso8601String(), // Convertir DateTime a String ISO 8601
+      'saleDate':
+          saleDate.toIso8601String(), // Convertir DateTime a String ISO 8601
       'items': items.map((item) => item.toJson()).toList(),
       'totalAmount': totalAmount,
       'receivedAmount': receivedAmount,

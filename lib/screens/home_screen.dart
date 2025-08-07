@@ -34,6 +34,7 @@ class HomeScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
+                  //Todo:Theme.of(context).colorScheme.primary cambiar
                 ),
               ),
             ),
@@ -43,6 +44,7 @@ class HomeScreen extends StatelessWidget {
               height: 70,
               child: ElevatedButton.icon(
                 onPressed: () => Get.to(() => ProductListScreen()),
+                //todo: estudiar get.page
                 icon: const Icon(Icons.category),
                 label: const Text('Gestión de Productos',
                     style: TextStyle(fontSize: 20)),

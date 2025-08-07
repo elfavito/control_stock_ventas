@@ -7,7 +7,7 @@ class ProductListScreen extends StatelessWidget {
   ProductListScreen({super.key});
 
   final ProductController productController = Get.find<ProductController>();
-
+//La pantalla no tiene estado propio. Recupera su estado reactivo (products) del ProductController
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +114,11 @@ class ProductListScreen extends StatelessWidget {
                 onPressed: productController.isAddingProduct.value
                     ? null // Deshabilita el botón si está procesando
                     : () {
-                        final barcode = barcodeController.text.trim();
+                        final barcode = barcodeController.text
+                            .trim(); // elimina los espacios en blanco que están al principio y al final
                         final name = nameController.text.trim();
-                        final price = double.tryParse(priceController.text.trim());
+                        final price = double.tryParse(priceController.text
+                            .trim()); //intenta convertir a texto si falla devuelve null
 
                         if (price == null) {
                           Get.snackbar(
@@ -128,7 +130,7 @@ class ProductListScreen extends StatelessWidget {
                           productController.updateProduct(
                               product.id, barcode, name, price);
                           // Cierra el diálogo después de editar
-                          Get.back(); 
+                          Get.back();
                         } else {
                           // Llama al método asíncrono
                           productController.addProduct(barcode, name, price);

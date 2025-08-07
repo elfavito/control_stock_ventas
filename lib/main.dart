@@ -37,7 +37,7 @@ void main() async {
   }, permanent: true);
   Get.put(ProductController(storageService: Get.find<IDataStorageService>()));
   Get.put(SaleController(storageService: Get.find<IDataStorageService>()));
-
+//todo: buscar beneficios del get.page y el lazy-loading
   runApp(const MyApp());
 }
 
